@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "concurrently --kill-others \"npm run serve\" \"wait-on http://localhost:8080 && electron .\"",
+    "start": "concurrently --kill-others \"npm run serve\" \"electron .\"",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build && shx cp index.js dist/index.js && cd dist && concurrently --kill-others \"npx serve -l 8080\" \"wait-on http://localhost:8080 && electron index.js\"",
     "test:unit": "vue-cli-service test:unit",
