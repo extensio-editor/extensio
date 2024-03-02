@@ -16,11 +16,7 @@ const createWindow = () => {
     },
   });
 
-  win.loadURL(
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:8080"
-      : `file://${__dirname}/index.html`
-  );
+  win.loadURL("http://localhost:8080");
 };
 
 app.on("ready", createWindow);
