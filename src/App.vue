@@ -1,5 +1,5 @@
 <template>
-  <img alt="extensio logo" src="./assets/logo.png" class="logo" />
+  <title-bar></title-bar>
   <router-view class="view left-sidebar" name="LeftSidebar"></router-view>
   <router-view class="view main-content"></router-view>
   <router-view class="view right-sidebar" name="RightSidebar"></router-view>
@@ -7,17 +7,19 @@
   <router-view class="view top-bar" name="TopBar"></router-view>
 </template>
 
+<script lang="ts">
+import titleBar from "./components/titleBar.vue";
+
+export default {
+  components: {
+    titleBar,
+  },
+};
+</script>
+
 <style lang="less">
 @background-col: #302f3dff;
 @foreground-col: #c1c0c9ff;
-.logo {
-  width: 30px;
-  height: 30px;
-  position: absolute;
-  left: 10px;
-  top: 10px;
-  border-radius: 2px;
-}
 
 body {
   background-color: @background-col;
