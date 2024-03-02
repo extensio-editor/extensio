@@ -8,6 +8,9 @@ const { app, BrowserWindow, ipcMain } = require("electron");
 const { existsSync } = require("original-fs");
 const { join, resolve } = require("node:path");
 
+const express = require("express");
+const express_app = express();
+
 const getIconLocation = () => {
   const fileLoc = "img/icons/favicon.ico";
   const prodLocation = join(__dirname, fileLoc);
@@ -34,17 +37,40 @@ const createWindow = () => {
 
   win.loadURL("http://localhost:8080");
 
-  ipcMain.on("close", () => {
-    app.quit();
+  express_app.get("/window/trafficLights/:action", (req, res) => {
+    console.log(req.params.action);
+    if (req.params.action === undefined) {
+      res.status(400);
+      return;
+    }
+
+    switch (req.params.action) {
+      case "close":
+        win.close();
+        break;
+
+      case "minimize":
+        win.minimize();
+        win.webContents.reloadIgnoringCache();
+        break;
+
+      case "toggleFullscreen":
+        if (win.isMaximized()) {
+          win.unmaximize();
+        } else {
+          win.maximize();
+        }
+        win.webContents.reloadIgnoringCache();
+        break;
+      default:
+        res.status(400);
+        return;
+    }
+
+    res.status(200);
   });
 
-  ipcMain.on("minimize", () => {
-    win.minimize();
-  });
-
-  ipcMain.on("fullscreen", () => {
-    win.setFullScreen(!win.isFullScreen);
-  });
+  express_app.listen(8081);
 };
 
 app.on("ready", createWindow);
