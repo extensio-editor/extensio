@@ -4,12 +4,28 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, dialog } = require("electron");
 const { existsSync } = require("original-fs");
 const { join, resolve } = require("node:path");
 
 const express = require("express");
 const express_app = express();
+
+express_app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080"); // Allow requests from this origin
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  ); // Allowed HTTP methods
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization"); // Allowed headers
+  res.setHeader("Access-Control-Allow-Credentials", true); // Allow cookies to be sent
+  if (req.method === "OPTIONS") {
+    // Handle preflight requests
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
 
 const getIconLocation = () => {
   const fileLoc = "img/icons/favicon.ico";
@@ -68,6 +84,25 @@ const createWindow = () => {
     }
 
     res.status(200);
+  });
+
+  express_app.get("/project/:action", async (req, res) => {
+    console.log("Showing folder open dialogue");
+
+    const dir = await dialog.showOpenDialog(win, {
+      properties: ["openDirectory"],
+    });
+
+    if (dir.canceled) {
+      console.log("cancelled by user");
+      res.status(202).json(dir);
+      return;
+    } else {
+      console.log(dir);
+      console.log(`selected ${dir}`);
+      res.status(200).json(dir);
+      return;
+    }
   });
 
   express_app.listen(8081);

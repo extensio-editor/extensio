@@ -6,7 +6,7 @@
     <br />
     <h2>Get started</h2>
     <div class="buttonContainer">
-      <button class="projectButton">
+      <button @click="openDirectory()" class="projectButton">
         <SVGicon
           name="folder"
           icon-width="20px"
@@ -43,6 +43,24 @@ import SVGicon from "@/components/SVGicon.vue";
 export default defineComponent({
   name: "HomeView",
   components: { hrText, SVGicon },
+  methods: {
+    openDirectory() {
+      const req = new Request("http://localhost:8081/project/open");
+      fetch(req)
+        .then((response) => {
+          if (response.status === 202) {
+            return;
+          }
+
+          let data = response.json();
+          return data;
+        })
+        .then((data) => {
+          const folder = data["filePaths"][0];
+          console.log(`opening ${folder} `);
+        });
+    },
+  },
 });
 </script>
 
