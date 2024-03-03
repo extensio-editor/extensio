@@ -5,7 +5,7 @@
   "scripts": {
     "start": "concurrently --kill-others \"npm run serve\" \"electron .\"",
     "serve": "vue-cli-service serve",
-    "buildOnly": "vue-cli-service build && shx cp index.js dist/index.js && shx cp src/preload.js dist/preload.js",
+    "buildOnly": "vue-cli-service build && shx cp index.js dist/index.js",
     "build": "npm run buildOnly && cd dist && concurrently --kill-others \"npx serve -l 8080\" \"wait-on http://localhost:8080 && electron index.js\"",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"

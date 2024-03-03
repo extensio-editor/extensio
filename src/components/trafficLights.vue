@@ -1,23 +1,23 @@
 <template>
   <div id="trafficLights">
     <div
+      @click="trafficLightAction('toggleFullscreen')"
       class="trafficLight"
       id="GreenLight"
-      @click="trafficLightAction('toggleFullscreen')"
     >
       o
     </div>
     <div
+      @click="trafficLightAction('minimize')"
       class="trafficLight"
       id="OrangeLight"
-      @click="trafficLightAction('minimize')"
     >
       o
     </div>
     <div
+      @click="trafficLightAction('close')"
       class="trafficLight"
       id="RedLight"
-      @click="trafficLightAction('close')"
     >
       o
     </div>
@@ -42,16 +42,20 @@ export default {
 
 <style lang="less">
 #trafficLights {
-  z-index: 0;
+  z-index: 10;
   position: absolute;
   right: 10px;
-  top: 10px;
-  cursor: pointer;
+  top: calc(35px / 2);
+  -webkit-app-region: no-drag;
 }
 
 .trafficLight {
+  cursor: pointer;
   display: inline-block;
+  z-index: 2147483647;
   margin: 5px;
+  margin-top: 0;
+  margin-bottom: 0;
   width: 12px;
   height: 12px;
   line-height: 12px;

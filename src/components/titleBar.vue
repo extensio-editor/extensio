@@ -1,7 +1,9 @@
 <template>
   <div id="titleBar">
-    <img alt="extensio logo" src="../assets/logo.png" class="logo" />
-    <p>Extensio - {{ project_name }}</p>
+    <div class="dragable">
+      <img alt="extensio logo" src="../assets/logo.png" class="logo" />
+      <p>Extensio - {{ project_name }}</p>
+    </div>
     <traffic-lights></traffic-lights>
   </div>
 </template>
@@ -26,6 +28,9 @@ export default {
   border-bottom: 2px rgba(25, 25, 25, 0.3) solid;
   user-select: none;
   -webkit-user-select: none;
+}
+
+.dragable {
   -webkit-app-region: drag;
 }
 
