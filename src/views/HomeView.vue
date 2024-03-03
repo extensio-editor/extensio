@@ -7,7 +7,12 @@
     <h2>Get started</h2>
     <div class="buttonContainer">
       <button class="projectButton">
-        <SVGicon name="folder" icon-width="20px" icon-height="20px" />
+        <SVGicon
+          name="folder"
+          icon-width="20px"
+          icon-height="20px"
+          color="#2a1f31"
+        />
         &nbsp;
         <span id="buttonText">Open an existing project</span>
       </button>
@@ -17,7 +22,12 @@
     <br />
     <div class="buttonContainer">
       <button class="projectButton">
-        <SVGicon name="add" icon-width="20px" icon-height="20px" />
+        <SVGicon
+          name="add"
+          icon-width="20px"
+          icon-height="20px"
+          color="#2a1f31"
+        />
         &nbsp;
         <span id="buttonText">Create a new project</span>
       </button>
