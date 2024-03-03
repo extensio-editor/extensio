@@ -32,6 +32,8 @@ export default {
 
 .dragable {
   -webkit-app-region: drag;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .logo {

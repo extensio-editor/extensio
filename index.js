@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow } = require("electron");
 const { existsSync } = require("original-fs");
 const { join, resolve } = require("node:path");
 
@@ -38,7 +38,7 @@ const createWindow = () => {
   win.loadURL("http://localhost:8080");
 
   express_app.get("/window/trafficLights/:action", (req, res) => {
-    console.log(req.params.action);
+    console.log(`window action ${req.params.action} called`);
     if (req.params.action === undefined) {
       res.status(400);
       return;
