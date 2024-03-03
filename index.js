@@ -11,6 +11,9 @@ const { join, resolve } = require("node:path");
 const express = require("express");
 const express_app = express();
 
+express_app.use(express.json());
+express_app.use(express.urlencoded());
+
 express_app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080"); // Allow requests from this origin
   res.setHeader(
@@ -83,6 +86,11 @@ const createWindow = () => {
         return;
     }
 
+    res.status(200);
+  });
+
+  express_app.post("/project/new", (req, res) => {
+    console.log(req.body);
     res.status(200);
   });
 

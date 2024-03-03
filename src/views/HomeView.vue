@@ -3,6 +3,7 @@
     <h1>Hello there</h1>
     <h3>Welcome to the Extensio code editor!</h3>
     <hr class="mediocre" />
+    <create-project></create-project>
     <div id="getStarted">
       <h2>Get started</h2>
       <br />
@@ -42,16 +43,18 @@
 import { defineComponent } from "vue";
 import hrText from "@/components/hrText.vue";
 import SVGicon from "@/components/SVGicon.vue";
+import createProject from "@/components/createProject.vue";
 
 export default defineComponent({
   name: "HomeView",
-  components: { hrText, SVGicon },
+  components: { hrText, SVGicon, createProject },
   methods: {
     openDirectory() {
       const req = new Request("http://localhost:8081/project/open");
       fetch(req)
         .then((response) => {
           if (response.status === 202) {
+            alert("is canculed :(");
             return;
           }
 
@@ -59,6 +62,7 @@ export default defineComponent({
           return data;
         })
         .then((data) => {
+          if (!data) return;
           const folder = data["filePaths"][0];
           console.log(`opening ${folder} `);
         });
