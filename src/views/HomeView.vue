@@ -3,34 +3,37 @@
     <h1>Hello there</h1>
     <h3>Welcome to the Extensio code editor!</h3>
     <hr class="mediocre" />
-    <br />
-    <h2>Get started</h2>
-    <div class="buttonContainer">
-      <button @click="openDirectory()" class="projectButton">
-        <SVGicon
-          name="folder"
-          icon-width="20px"
-          icon-height="20px"
-          color="#2a1f31"
-        />
-        &nbsp;
-        <span id="buttonText">Open an existing project</span>
-      </button>
-    </div>
-    <br />
-    <hr-text color="#2a1f31" text="OR" unselectable></hr-text>
-    <br />
-    <div class="buttonContainer">
-      <button class="projectButton">
-        <SVGicon
-          name="add"
-          icon-width="20px"
-          icon-height="20px"
-          color="#2a1f31"
-        />
-        &nbsp;
-        <span id="buttonText">Create a new project</span>
-      </button>
+    <div id="getStarted">
+      <h2>Get started</h2>
+      <br />
+      <br />
+      <div class="buttonContainer">
+        <button @click="openDirectory()" class="projectButton">
+          <SVGicon
+            name="folder"
+            icon-width="20px"
+            icon-height="20px"
+            color="#2a1f31"
+          />
+          &nbsp;
+          <span id="buttonText">Open an existing project</span>
+        </button>
+      </div>
+      <br />
+      <hr-text color="#2a1f31" text="OR" unselectable></hr-text>
+      <br />
+      <div class="buttonContainer">
+        <button class="projectButton">
+          <SVGicon
+            name="add"
+            icon-width="20px"
+            icon-height="20px"
+            color="#2a1f31"
+          />
+          &nbsp;
+          <span id="buttonText">Create a new project</span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -68,6 +71,21 @@ export default defineComponent({
 @background-accent: #2a1f31;
 
 @buttonHeight: 30px;
+
+#getStarted {
+  width: 100%;
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mediocre {
+  width: 75vw;
+  background-color: @background-accent;
+  border: none;
+  height: 1px;
+}
 
 .projectButton {
   border: @background-accent 2px solid;

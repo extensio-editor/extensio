@@ -99,7 +99,7 @@ const createWindow = () => {
       return;
     } else {
       console.log(dir);
-      console.log(`selected ${dir}`);
+      console.log(`selected ${dir.filePaths[0]}`);
       res.status(200).json(dir);
       return;
     }
