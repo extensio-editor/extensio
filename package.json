@@ -6,7 +6,8 @@
     "start": "concurrently --kill-others \"npm run serve\" \"electron .\"",
     "serve": "vue-cli-service serve",
     "buildOnly": "vue-cli-service build && shx cp index.js dist/index.js",
-    "build": "npm run buildOnly && cd dist && concurrently --kill-others \"npx serve -l 8080\" \"wait-on http://localhost:8080 && electron index.js\"",
+    "startProd": "cd dist && concurrently --kill-others \"npx serve -l 8080\" \"wait-on http://localhost:8080 && electron index.js\"",
+    "build": "npm run buildOnly && npm run startProd",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
