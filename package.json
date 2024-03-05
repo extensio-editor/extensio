@@ -1,12 +1,38 @@
 {
   "name": "extensio",
+  "description": "Extensio code editor",
+  "author": "Extensio contributors",
   "version": "0.1.0",
+  "main": "dist/index.js",
   "private": true,
+  "build": {
+    "appId": "extensio.editor",
+    "files": [
+      "dist/**/*"
+    ],
+    "directories": {
+      "output": "releases/${platform}/${arch}"
+    },
+    "win": {
+      "target": "squirrel"
+    },
+    "mac": {
+      "category": "public.app-category.developer-tools"
+    },
+    "linux": {
+      "target": "flatpak"
+    }
+  },
   "scripts": {
-    "start": "concurrently --kill-others \"npm run serve\" \"electron .\"",
+    "dev": "concurrently --kill-others \"npm run serve\" \"export NODE_ENV=development && electron .\"",
+    "clean": "shx rm -rf dist && shx rm -rf releases",
     "serve": "vue-cli-service serve",
-    "buildOnly": "vue-cli-service build && shx cp index.js dist/index.js",
-    "startProd": "cd dist && concurrently --kill-others \"npx serve -l 8080\" \"wait-on http://localhost:8080 && electron index.js\"",
+    "buildOnly": "vue-cli-service build && shx cp index.js dist/index.js && shx touch dist/prod",
+    "release": "npm run clean && npm run buildOnly && npx electron-builder -wl",
+    "release:win": "npm run buildOnly && npx electron-builder -w",
+    "release:mac": "npm run buildOnly && npx electron-builder -m",
+    "release:linux": "npm run buildOnly && npx electron-builder -l",
+    "startProd": "cd dist && electron .",
     "build": "npm run buildOnly && npm run startProd",
     "test:unit": "vue-cli-service test:unit"
   },
@@ -37,6 +63,8 @@
     "@vue/vue3-jest": "^27.0.0-alpha.1",
     "babel-jest": "^27.0.6",
     "electron": "^29.1.0",
+    "electron-builder": "^24.13.3",
+    "electron-builder-squirrel-windows": "^24.13.3",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",

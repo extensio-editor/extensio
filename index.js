@@ -8,11 +8,27 @@ const { app, BrowserWindow, dialog } = require("electron");
 const { existsSync } = require("original-fs");
 const { join, resolve } = require("node:path");
 
+const isDev =
+  process.env.NODE_ENV === "development" &&
+  !existsSync(join(__dirname, "prod"));
+const isProd = !isDev || existsSync(join(__dirname, "prod"));
+
 const express = require("express");
 const express_app = express();
+let app_server;
+if (isProd) {
+  app_server = express();
+}
 
 express_app.use(express.json());
 express_app.use(express.urlencoded());
+
+if (isProd) {
+  app_server.use(express.static(join(__dirname, ".")));
+  app_server.get("/", (req, res) =>
+    res.sendFile(join(__dirname, "index.html"))
+  );
+}
 
 express_app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080"); // Allow requests from this origin
@@ -32,9 +48,9 @@ express_app.use((req, res, next) => {
 
 const getIconLocation = () => {
   const fileLoc = "img/icons/favicon.ico";
-  const prodLocation = join(__dirname, fileLoc);
+  const prodLocation = join(__dirname, "dist", fileLoc);
   if (existsSync(prodLocation)) {
-    return resolve(fileLoc);
+    return resolve(join("dist", fileLoc));
   } else {
     return resolve(join("public", fileLoc));
   }
@@ -51,6 +67,10 @@ const createWindow = () => {
     },
     frame: false,
   });
+
+  if (isProd) {
+    win.hide();
+  }
 
   win.setIcon(icon);
 
@@ -113,7 +133,15 @@ const createWindow = () => {
     }
   });
 
-  express_app.listen(8081);
+  express_app.listen(8081, () => {
+    console.log("Started backend server...");
+    if (isProd) {
+      app_server.listen(8080, () => {
+        console.log("Started app server...");
+        win.show();
+      });
+    }
+  });
 };
 
 app.on("ready", createWindow);
