@@ -11,10 +11,11 @@
 <script lang="ts">
 import trafficLights from "./trafficLights.vue";
 export default {
-  data() {
-    return {
-      project_name: "No project opened",
-    };
+  props: {
+    project_name: {
+      type: String,
+      default: "No project opened",
+    },
   },
   components: {
     trafficLights,

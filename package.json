@@ -24,7 +24,7 @@
     }
   },
   "scripts": {
-    "dev": "concurrently --kill-others \"npm run serve\" \"export NODE_ENV=development && electron .\"",
+    "dev": "concurrently --kill-others \"npm run serve\" \"electron .\"",
     "clean": "shx rm -rf dist && shx rm -rf releases",
     "serve": "vue-cli-service serve",
     "buildOnly": "vue-cli-service build && shx cp index.js dist/index.js && shx touch dist/prod",
