@@ -44,9 +44,10 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import SVGicon from "./SVGicon.vue";
 
-export default {
+export default defineComponent({
   data() {
     return {};
   },
@@ -73,7 +74,7 @@ export default {
         });
     },
   },
-};
+});
 </script>
 
 <style lang="less">

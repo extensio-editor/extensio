@@ -9,8 +9,10 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import trafficLights from "./trafficLights.vue";
-export default {
+
+export default defineComponent({
   props: {
     project_name: {
       type: String,
@@ -20,7 +22,7 @@ export default {
   components: {
     trafficLights,
   },
-};
+});
 </script>
 
 <style lang="less">

@@ -41,7 +41,9 @@
 </template>
 
 <script lang="ts">
-export default {
+import { defineComponent } from "vue";
+
+export default defineComponent({
   props: {
     name: String,
     iconWidth: {
@@ -57,5 +59,5 @@ export default {
       default: "#000000",
     },
   },
-};
+});
 </script>
