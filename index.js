@@ -8,6 +8,8 @@ const { app, BrowserWindow, dialog } = require("electron");
 const { existsSync } = require("original-fs");
 const { join, resolve } = require("node:path");
 
+require("dotenv").config();
+
 const isDev =
   process.env.NODE_ENV === "development" &&
   !existsSync(join(__dirname, "prod"));
