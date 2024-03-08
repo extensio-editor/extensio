@@ -14,6 +14,7 @@ const {
 const { join, resolve } = require("node:path");
 
 const commandExists = require("command-exists-promise");
+const RPCclient = require("discord-rich-presence")("1215770435887698042");
 
 const { exec } = require("child_process");
 
@@ -220,8 +221,33 @@ const createWindow = () => {
     }
   });
 
+  express_app.get("/rpc/update", (req, res) => {
+    RPCclient.updatePresence({
+      details: req.query.doing || "Idle",
+      state: req.query.project || "No project opened",
+      largeImageKey:
+        req.query.theme === "light" ? "extensio_light" : "extensio_dark",
+      smallImageKey: isDev ? "extensio_devbuild" : undefined,
+      smallImageText: isDev ? "Development build" : undefined,
+      instance: true,
+      startTimestamp: Date.now(),
+      largeImageText: "Extensio code editor",
+    });
+    res.status(200);
+  });
+
   express_app.listen(8081, () => {
     console.log("Started backend server...");
+    RPCclient.updatePresence({
+      details: "Idle",
+      state: "No project opened",
+      largeImageKey: "extensio_dark",
+      smallImageKey: isDev ? "extensio_devbuild" : undefined,
+      smallImageText: isDev ? "Development build" : undefined,
+      instance: false,
+      startTimestamp: Date.now(),
+      largeImageText: "Extensio code editor",
+    });
     if (isProd) {
       app_server.listen(8080, () => {
         console.log("Started app server...");
