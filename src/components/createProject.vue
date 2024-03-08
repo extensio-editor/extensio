@@ -24,6 +24,7 @@
             name="filename"
             id="filename"
             placeholder="project name"
+            oninvalid="alert('You messed up goofball\nProject name is required')"
           />
           <br />
           <div id="checkboxesbox">
