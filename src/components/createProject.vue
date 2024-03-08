@@ -15,34 +15,35 @@
         >
         <span v-else> {{ selectedFolder }} </span>
       </small>
-      <form action="http://localhost:8081/project/new" method="post">
-        <div id="formField">
-          <input
-            required="true"
-            class="unselectable"
-            type="text"
-            name="filename"
-            id="filename"
-            placeholder="project name"
-            oninvalid="alert('You messed up goofball\nProject name is required')"
-          />
-          <br />
-          <div id="checkboxesbox">
-            <label class="unselectable" id="rootCheckbox">
-              <input type="checkbox" name="root" id="isRoot" checked />
-              <span>Selected folder is project root</span>
-            </label>
-            <label class="unselectable" id="gitCheckbox">
-              <input type="checkbox" name="git" id="createGit" checked />
-              <span>Create git repo</span>
-            </label>
-          </div>
-          <br />
-          <button id="createProjectButton" class="unselectable">
-            Create project
-          </button>
+      <div id="formField">
+        <input
+          required="true"
+          class="unselectable"
+          type="text"
+          name="filename"
+          id="filename"
+          placeholder="project name"
+        />
+        <br />
+        <div id="checkboxesbox">
+          <label class="unselectable" id="rootCheckbox">
+            <input type="checkbox" name="root" id="isRoot" checked />
+            <span>Selected folder is project root</span>
+          </label>
+          <label class="unselectable" id="gitCheckbox">
+            <input type="checkbox" name="git" id="createGit" checked />
+            <span>Create git repo</span>
+          </label>
         </div>
-      </form>
+        <br />
+        <button
+          id="createProjectButton"
+          class="unselectable"
+          @click="submitIfValid()"
+        >
+          Create project
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -62,6 +63,18 @@ export default defineComponent({
     SVGicon,
   },
   methods: {
+    submitIfValid() {
+      // POST http://localhost:8081/project/new
+      const projectNameBox: HTMLInputElement = document.getElementById(
+        "filename"
+      ) as HTMLInputElement;
+      const projectName: string = projectNameBox.value;
+      if (projectName.trim() == "") {
+        alert("No you goofball,\nProject name can not be empty!");
+      }
+
+      // Submit the actual data
+    },
     openDirectory() {
       const req = new Request("http://localhost:8081/project/open");
       fetch(req)
