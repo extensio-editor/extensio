@@ -10,8 +10,11 @@
         folder
       </button>
       <small class="folderDisclaimerText"
-        >if no folder selected will use desktop</small
-      >
+        ><span v-if="selectedFolder === undefined"
+          >if no folder selected will use desktop</span
+        >
+        <span v-else> {{ selectedFolder }} </span>
+      </small>
       <form action="http://localhost:8081/project/new" method="post">
         <div id="formField">
           <input
@@ -49,7 +52,9 @@ import SVGicon from "./SVGicon.vue";
 
 export default defineComponent({
   data() {
-    return {};
+    return {
+      selectedFolder: undefined as unknown as string,
+    };
   },
   emits: ["reset-new-project"],
   components: {
@@ -72,6 +77,18 @@ export default defineComponent({
           if (!data) return;
           const folder = data["filePaths"][0];
           console.log(`opening ${folder} `);
+          let path;
+          // Only get the last 3 items in the path
+          if (folder.startsWith("C:\\")) {
+            // For windows
+            path = folder.split("\\");
+          } else {
+            // For unix based systems
+            // (linux & macos)
+            path = folder.split("/");
+          }
+          path = path.slice(-3);
+          this.selectedFolder = ".../" + path.join("/");
         });
     },
     leave() {
