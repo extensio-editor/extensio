@@ -3,7 +3,10 @@
     <h1>Hello there</h1>
     <h3>Welcome to the Extensio code editor!</h3>
     <hr class="mediocre" />
-    <create-project></create-project>
+    <create-project
+      v-if="CreateProjectShouldBeVisible"
+      @reset-new-project="CreateProjectShouldBeVisible = false"
+    ></create-project>
     <div id="getStarted">
       <h2>Get started</h2>
       <br />
@@ -24,7 +27,10 @@
       <hr-text color="#2a1f31" text="OR" unselectable></hr-text>
       <br />
       <div class="buttonContainer">
-        <button class="projectButton">
+        <button
+          class="projectButton"
+          @click="CreateProjectShouldBeVisible = true"
+        >
           <SVGicon
             name="add"
             icon-width="20px"
@@ -67,6 +73,11 @@ export default defineComponent({
           console.log(`opening ${folder} `);
         });
     },
+  },
+  data() {
+    return {
+      CreateProjectShouldBeVisible: false,
+    };
   },
 });
 </script>

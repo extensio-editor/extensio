@@ -1,5 +1,5 @@
 <template>
-  <div id="fullBackground">
+  <div id="fullBackground" @click.self="leave()">
     <div id="newProjectBox">
       <button
         @click="openDirectory()"
@@ -51,6 +51,7 @@ export default defineComponent({
   data() {
     return {};
   },
+  emits: ["reset-new-project"],
   components: {
     SVGicon,
   },
@@ -72,6 +73,9 @@ export default defineComponent({
           const folder = data["filePaths"][0];
           console.log(`opening ${folder} `);
         });
+    },
+    leave() {
+      this.$emit("reset-new-project");
     },
   },
 });
