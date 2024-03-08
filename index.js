@@ -5,15 +5,24 @@
  */
 
 const { app, BrowserWindow, dialog } = require("electron");
-const { existsSync } = require("original-fs");
+const {
+  existsSync,
+  writeFileSync,
+  mkdirSync,
+  appendFileSync,
+} = require("original-fs");
 const { join, resolve } = require("node:path");
+
+const commandExists = require("command-exists-promise");
+
+const { exec } = require("child_process");
 
 require("dotenv").config();
 
 const isDev =
   process.env.NODE_ENV === "development" &&
-  !existsSync(join(__dirname, "prod"));
-const isProd = !isDev || existsSync(join(__dirname, "prod"));
+  !existsSync(join(__filename, "prod"));
+const isProd = !isDev || existsSync(join(__filename, "prod"));
 
 const express = require("express");
 const express_app = express();
@@ -26,9 +35,9 @@ express_app.use(express.json());
 express_app.use(express.urlencoded());
 
 if (isProd) {
-  app_server.use(express.static(join(__dirname, ".")));
+  app_server.use(express.static(join(__filename, ".")));
   app_server.get("/", (req, res) =>
-    res.sendFile(join(__dirname, "index.html"))
+    res.sendFile(join(__filename, "index.html"))
   );
 }
 
@@ -50,7 +59,7 @@ express_app.use((req, res, next) => {
 
 const getIconLocation = () => {
   const fileLoc = "img/icons/favicon.ico";
-  const prodLocation = join(__dirname, "dist", fileLoc);
+  const prodLocation = join(__filename, "dist", fileLoc);
   if (existsSync(prodLocation)) {
     return resolve(join("dist", fileLoc));
   } else {
@@ -112,7 +121,83 @@ const createWindow = () => {
   });
 
   express_app.post("/project/new", (req, res) => {
-    console.log(req.body);
+    if (!req.body["project"]) {
+      console.error("You did something wrong");
+      res.status(400);
+      return;
+    }
+
+    console.log(req.body["project"]);
+
+    let projectRoot = req.body["project"]["location"]
+      ? req.body["project"]["location"]
+      : join(require("os").homedir(), "desktop");
+
+    if (!req.body["project"]["isRoot"]) {
+      projectRoot = join(projectRoot, req.body["project"]["name"]);
+    }
+
+    let shouldReturn = false;
+
+    if (!existsSync(projectRoot)) {
+      mkdirSync(projectRoot, { recursive: true });
+    }
+
+    process.chdir(projectRoot);
+
+    if (req.body["project"]["createGit"]) {
+      commandExists("git").then((exists) => {
+        if (!exists) {
+          res.status(404).json({ message: "Git is not installed!" });
+          return (shouldReturn = true);
+        }
+
+        exec(`git init`, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`error: ${error.message}`);
+            res.status(500).json({ message: error.message });
+            shouldReturn = true;
+            return;
+          }
+
+          if (stderr) {
+            console.error(`error: ${stderr}`);
+            res.status(500).json({ message: stderr });
+            shouldReturn = true;
+            return;
+          }
+
+          writeFileSync(
+            join(process.cwd(), ".git", "description"),
+            req.body["project"]["name"],
+            (err) => {
+              if (err) {
+                console.error(err);
+                res.status(500).json({ message: err });
+                shouldReturn = true;
+                return;
+              }
+            }
+          );
+
+          appendFileSync(
+            join(process.cwd(), ".git", "info", "exclude"),
+            "#exclude any files that are marked as private\n*.private",
+            (err) => {
+              if (err) {
+                console.error(err);
+                res.status(500).json({ message: err });
+                shouldReturn = true;
+                return;
+              }
+            }
+          );
+        });
+      });
+    }
+
+    if (shouldReturn) return;
+
     res.status(200);
   });
 

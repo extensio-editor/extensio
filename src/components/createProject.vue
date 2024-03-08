@@ -56,6 +56,7 @@ export default defineComponent({
   data() {
     return {
       selectedFolder: undefined as unknown as string,
+      fullSelectedFolder: undefined as unknown as string,
     };
   },
   emits: ["reset-new-project"],
@@ -69,11 +70,38 @@ export default defineComponent({
         "filename"
       ) as HTMLInputElement;
       const projectName: string = projectNameBox.value;
+
       if (projectName.trim() == "") {
-        alert("No you goofball,\nProject name can not be empty!");
+        alert("No you goofball,\nProject name can not be empty!"); // With this electron loses its focus. Need to exchange for custom alert system.
+        return;
       }
 
+      const isRootBox: HTMLInputElement = document.getElementById(
+        "isRoot"
+      ) as HTMLInputElement;
+      const doGitBox: HTMLInputElement = document.getElementById(
+        "createGit"
+      ) as HTMLInputElement;
+
       // Submit the actual data
+      fetch("http://localhost:8081/project/new", {
+        method: "POST",
+        body: JSON.stringify({
+          project: {
+            name: projectName as string,
+            location: this.fullSelectedFolder as string,
+            isRoot: isRootBox.checked as boolean,
+            createGit: doGitBox.checked as boolean,
+          },
+        }),
+        headers: new Headers({ "content-type": "application/json" }),
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+        });
     },
     openDirectory() {
       const req = new Request("http://localhost:8081/project/open");
@@ -91,6 +119,7 @@ export default defineComponent({
           if (!data) return;
           const folder = data["filePaths"][0];
           console.log(`opening ${folder} `);
+          this.fullSelectedFolder = folder;
           let path;
           // Only get the last 3 items in the path
           if (folder.startsWith("C:\\")) {
