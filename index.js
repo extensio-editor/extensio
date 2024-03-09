@@ -10,7 +10,7 @@ const {
   writeFileSync,
   mkdirSync,
   appendFileSync,
-} = require("original-fs");
+} = require("node:fs");
 const { join, resolve } = require("node:path");
 
 const commandExists = require("command-exists-promise");
@@ -20,10 +20,8 @@ const { exec } = require("child_process");
 
 require("dotenv").config();
 
-const isDev =
-  process.env.NODE_ENV === "development" &&
-  !existsSync(join(__filename, "prod"));
-const isProd = !isDev || existsSync(join(__filename, "prod"));
+const isDev = process.env.NODE_ENV === "development";
+const isProd = !isDev;
 
 const express = require("express");
 const express_app = express();
@@ -36,9 +34,13 @@ express_app.use(express.json());
 express_app.use(express.urlencoded());
 
 if (isProd) {
-  app_server.use(express.static(join(__filename, ".")));
+  app_server.use(express.static(join(__filename, "..")));
   app_server.get("/", (req, res) =>
-    res.sendFile(join(__filename, "index.html"))
+    res.sendFile(join(__filename, "..", "index.html"))
+  );
+} else {
+  console.log(
+    "====================\n\nRunning in development mode!\n\n===================="
   );
 }
 
@@ -60,9 +62,8 @@ express_app.use((req, res, next) => {
 
 const getIconLocation = () => {
   const fileLoc = "img/icons/favicon.ico";
-  const prodLocation = join(__filename, "dist", fileLoc);
-  if (existsSync(prodLocation)) {
-    return resolve(join("dist", fileLoc));
+  if (isProd) {
+    return resolve(join(__filename, "..", fileLoc));
   } else {
     return resolve(join("public", fileLoc));
   }
@@ -256,5 +257,11 @@ const createWindow = () => {
     }
   });
 };
+
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
+});
 
 app.on("ready", createWindow);
