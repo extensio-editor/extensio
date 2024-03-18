@@ -7,6 +7,9 @@
   "private": true,
   "build": {
     "appId": "extensio.editor",
+    "extraFiles": [
+      "api/**/*"
+    ],
     "files": [
       "dist/**/*"
     ],

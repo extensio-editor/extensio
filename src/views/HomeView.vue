@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home" id="homeScreen">
     <h1>Hello there</h1>
     <h3>Welcome to the Extensio code editor!</h3>
     <hr class="mediocre" />

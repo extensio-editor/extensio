@@ -5,14 +5,17 @@
   <router-view class="view right-sidebar" name="RightSidebar"></router-view>
   <router-view class="view bottom-bar" name="BottomBar"></router-view>
   <router-view class="view top-bar" name="TopBar"></router-view>
+  <extensionLoader />
 </template>
 
 <script lang="ts">
 import titleBar from "./components/titleBar.vue";
+import extensionLoader from "./components/extensionLoader.vue";
 
 export default {
   components: {
     titleBar,
+    extensionLoader,
   },
 };
 </script>

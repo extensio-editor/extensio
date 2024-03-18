@@ -10,6 +10,7 @@ const {
   writeFileSync,
   mkdirSync,
   appendFileSync,
+  readdirSync,
 } = require("node:fs");
 const { join, resolve } = require("node:path");
 
@@ -22,6 +23,8 @@ require("dotenv").config();
 
 const isDev = process.env.NODE_ENV === "development";
 const isProd = !isDev;
+
+let extensions = [];
 
 const express = require("express");
 const express_app = express();
@@ -67,6 +70,23 @@ const getIconLocation = () => {
   } else {
     return resolve(join("public", fileLoc));
   }
+};
+
+const extensionFolderPath = join(__dirname, "extensions");
+
+const discoverExtensions = () => {
+  return readdirSync(extensionFolderPath)
+    .filter((file) => file.endsWith(".js"))
+    .map((file) => join(extensionFolderPath, file));
+};
+
+const loadExtensions = () => {
+  const extensions = discoverExtensions();
+  const reqs = [];
+  extensions.forEach((extension) => {
+    reqs.push(require(extension));
+  });
+  return reqs;
 };
 
 const createWindow = () => {
@@ -205,6 +225,10 @@ const createWindow = () => {
     res.status(200);
   });
 
+  express_app.get("/extensions/get", (req, res) => {
+    res.json(extensions);
+  });
+
   express_app.get("/project/:action", async (req, res) => {
     console.log("Showing folder open dialogue");
 
@@ -266,4 +290,13 @@ app.on("window-all-closed", () => {
   }
 });
 
-app.on("ready", createWindow);
+app.on("ready", () => {
+  createWindow();
+  loadExtensions();
+
+  require("./api/extensionAPI.js")
+    .getRegisteredExtensions()
+    .forEach((item) => {
+      extensions.push(item);
+    });
+});
