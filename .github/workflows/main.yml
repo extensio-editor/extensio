@@ -16,25 +16,24 @@ jobs:
 
       - name: Get current version
         id: get_version
-        run: echo "::set-output name=version::$(node -p "require('./package.json').version")"
+        run: |
+          echo "::set-output name=version::$(node -p "require('./package.json').version")"
 
       - name: Check if release needed
         id: check_release
         run: |
-          LATEST_VERSION=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r '.tag_name' | sed 's/v//')
-          if [ "${LATEST_VERSION}" != "${{ steps.get_version.outputs.version }}" ]; then
+          $LATEST_VERSION = (Invoke-WebRequest -Uri "https://api.github.com/repos/${{ github.repository }}/releases/latest").Content | ConvertFrom-Json | Select-Object -ExpandProperty tag_name -First 1
+          if ($LATEST_VERSION -ne "${{ steps.get_version.outputs.version }}") {
             echo "::set-output name=release_needed::true"
-          else
+          } else {
             echo "::set-output name=release_needed::false"
-          fi
+          }
 
-      - name: Install dependencies
+      - name: Install dependencies and build releases
         if: steps.check_release.outputs.release_needed == 'true'
-        run: npm i
-
-      - name: Build releases
-        if: steps.check_release.outputs.release_needed == 'true'
-        run: npm run release
+        run: |
+          npm i
+          npm run release
 
       - name: Upload Windows unpacked
         if: steps.check_release.outputs.release_needed == 'true'
@@ -70,7 +69,6 @@ jobs:
           else
             echo "::set-output name=release_needed::false"
           fi
-
       - name: Create release
         if: steps.check_release.outputs.release_needed == 'true'
         id: create_release
@@ -94,7 +92,6 @@ jobs:
             releases/win-unpacked
             releases/lin-unpacked
             releases/win32/x64/squirrel-windows/*.exe
-
       - name: Complete
         if: steps.check_release.outputs.release_needed == 'true'
         run: echo "New release created"
