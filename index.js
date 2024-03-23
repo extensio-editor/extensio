@@ -72,7 +72,11 @@ const getIconLocation = () => {
   }
 };
 
-const extensionFolderPath = join(__dirname, "extensions");
+const extensionFolderPath = join(
+  require("os").homedir(),
+  ".extensio",
+  "extensions"
+);
 
 const discoverExtensions = () => {
   return readdirSync(extensionFolderPath)
@@ -294,7 +298,9 @@ app.on("ready", () => {
   createWindow();
   loadExtensions();
 
-  require("./api/extensionAPI.js")
+  console.log("Current directory: " + __dirname);
+
+  require("../../../api/extensionAPI.js")
     .getRegisteredExtensions()
     .forEach((item) => {
       extensions.push(item);

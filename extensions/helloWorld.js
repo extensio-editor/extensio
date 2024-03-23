@@ -4,6 +4,8 @@ function greet(name) {
   console.log(`Hello, ${name}!`);
 }
 
+console.log("current extension working directory: " + process.cwd());
+
 const extension = {
   name: "helloWorldExtension",
   mountsOn: "homeScreen",
