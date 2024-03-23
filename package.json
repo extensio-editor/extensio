@@ -2,7 +2,7 @@
   "name": "extensio",
   "description": "Extensio code editor",
   "author": "Extensio contributors",
-  "version": "0.1.0",
+  "version": "0.0.0-alpha",
   "main": "dist/index.js",
   "private": true,
   "build": {
@@ -17,7 +17,9 @@
       "output": "releases/${platform}/${arch}"
     },
     "win": {
-      "target": "squirrel"
+      "target": "squirrel",
+      "remoteReleases": true,
+      "iconUrl": "https://raw.githubusercontent.com/extensio-editor/website/main/src/icons/android-chrome-512x512.png"
     },
     "mac": {
       "category": "public.app-category.developer-tools"
