@@ -44,6 +44,8 @@ jobs:
           npx eslint --fix
           npm run release
 
+      - run: mkdir final
+
       - name: Zip Windows unpacked
         if: steps.check_release.outputs.release_needed == 'true'
         run: |
