@@ -97,6 +97,8 @@ jobs:
           else
               echo "::set-output name=release_needed::false"
           fi
+
+      - run: echo "current version is ${{ steps.get_version.outputs.version }}"
           
       - name: Create release
         uses: softprops/action-gh-release@v2
