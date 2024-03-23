@@ -74,4 +74,4 @@ jobs:
           files: |
             ./final/win-unpacked.zip
             ./final/linux-unpacked.zip
-            "./final/Extensio setup.exe"
+            ./final/*.exe
