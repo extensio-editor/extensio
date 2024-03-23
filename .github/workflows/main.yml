@@ -86,6 +86,7 @@ jobs:
       - name: Get current version
         id: get_version
         run: |
+          echo $(ls)
           echo "::set-output name=version::$(node -p "require('./package.json').version")"
 
       - name: Check if release needed
