@@ -83,7 +83,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - run: ls -la
+      - uses: actions/checkout@v4
     
       - name: Get current version
         id: get_version
