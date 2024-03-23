@@ -9,6 +9,9 @@ jobs:
   windows-linux:
     runs-on: windows-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: disable auto crlf
         run: git config --global core.autocrlf false
@@ -68,8 +71,7 @@ jobs:
         with: 
           generate_release_notes: true
           tag_name: ${{ steps.get_version.outputs.version }}
-
-      - name: Upload release assets
-        uses: fnkr/github-action-ghr@v1.3
-        with:
-          GHR_PATH: "./final"
+          files: |
+            ./final/win-unpacked.zip
+            ./final/linux-unpacked.zip
+            "./final/Extensio setup.exe"
