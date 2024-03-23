@@ -37,7 +37,7 @@
     "clean": "shx rm -rf dist && shx rm -rf releases",
     "serve": "vue-cli-service serve",
     "copyBaseExtensions": "shx mkdir -p ~/.extensio/extensions && shx cp ./extensions/* ~/.extensio/extensions",
-    "buildOnly": "vue-cli-service build && shx cp index.js dist/index.js && shx touch dist/prod && shx cp api/* dist/api",
+    "buildOnly": "vue-cli-service build && shx cp index.js dist/index.js && shx touch dist/prod && shx mkdir -p dist/api && shx cp api/* dist/api",
     "release": "npm run clean && npm run buildOnly && npx electron-builder -wl",
     "release:win": "npm run buildOnly && npx electron-builder -w",
     "release:mac": "npm run buildOnly && npx electron-builder -m",
