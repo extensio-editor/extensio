@@ -5,10 +5,12 @@
   "version": "0.0.0-alpha",
   "main": "dist/index.js",
   "private": true,
+  "icon": "./public/img/android-chrome-512x512.png",
   "build": {
     "appId": "extensio.editor",
     "extraFiles": [
-      "api/**/*"
+      "api/**/*",
+      "extensions/*.js"
     ],
     "files": [
       "dist/**/*"
@@ -17,7 +19,9 @@
       "output": "releases/${platform}/${arch}"
     },
     "win": {
-      "target": "squirrel",
+      "target": "squirrel"
+    },
+    "squirrelWindows": {
       "remoteReleases": true,
       "iconUrl": "https://raw.githubusercontent.com/extensio-editor/website/main/src/icons/android-chrome-512x512.png"
     },
@@ -49,6 +53,7 @@
     "core-js": "^3.8.3",
     "discord-rich-presence": "^0.0.8",
     "dotenv": "^16.4.5",
+    "electron-squirrel-startup": "^1.0.0",
     "express": "^4.18.3",
     "i": "^0.3.7",
     "npm": "^10.5.0",

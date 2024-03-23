@@ -11,6 +11,7 @@ const {
   mkdirSync,
   appendFileSync,
   readdirSync,
+  copyFileSync,
 } = require("node:fs");
 const { join, resolve } = require("node:path");
 
@@ -293,6 +294,65 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
+
+// Directly from https://github.com/electron-archive/grunt-electron-installer#handling-squirrel-events
+const handleStartupEvent = () => {
+  if (process.platform !== "win32") {
+    return false;
+  }
+
+  var squirrelCommand = process.argv[1];
+  switch (squirrelCommand) {
+    case "--squirrel-install":
+    case "--squirrel-updated":
+      try {
+        // Copy base extensions to the extensions folder, overwrite if it already exists
+
+        // read the extension folder
+        // eslint-disable-next-line no-case-declarations
+        const extensionFolder = join("extensions");
+
+        if (!existsSync(extensionFolderPath)) {
+          mkdirSync(extensionFolderPath, { recursive: true });
+        }
+
+        // Copy the files.
+        // eslint-disable-next-line no-case-declarations
+        const extensionFiles = readdirSync(extensionFolder);
+        extensionFiles.forEach((file) => {
+          copyFileSync(
+            join(extensionFolder, file),
+            join(extensionFolderPath, file)
+          );
+        });
+
+        // Always quit when done
+        app.quit();
+      } catch (e) {
+        console.log("Error copying extensions, continuing regardless...");
+      }
+
+      return true;
+    case "--squirrel-uninstall":
+      // Undo anything you did in the --squirrel-install and
+      // --squirrel-updated handlers
+
+      // Always quit when done
+      app.quit();
+
+      return true;
+    case "--squirrel-obsolete":
+      // This is called on the outgoing version of your app before
+      // we update to the new version - it's the opposite of
+      // --squirrel-updated
+      app.quit();
+      return true;
+  }
+};
+
+if (handleStartupEvent()) {
+  return;
+}
 
 app.on("ready", () => {
   createWindow();
