@@ -22,11 +22,16 @@ jobs:
       - name: Check if release needed
         id: check_release
         run: |
+          try {
           $LATEST_VERSION = (Invoke-WebRequest -Uri "https://api.github.com/repos/${{ github.repository }}/releases/latest").Content | ConvertFrom-Json | Select-Object -ExpandProperty tag_name -First 1
           if ($LATEST_VERSION -ne "${{ steps.get_version.outputs.version }}") {
             echo "::set-output name=release_needed::true"
           } else {
             echo "::set-output name=release_needed::false"
+          }
+          }
+          catch {
+            echo "::set-output name=release_needed::true"
           }
 
       - name: Install dependencies and build releases
