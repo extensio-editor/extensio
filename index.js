@@ -360,7 +360,7 @@ app.on("ready", () => {
 
   console.log("Current directory: " + __dirname);
 
-  require("../../../api/extensionAPI.js")
+  require(isProd ? "../../../api/extensionAPI.js" : "./api/extensionAPI.js")
     .getRegisteredExtensions()
     .forEach((item) => {
       extensions.push(item);
