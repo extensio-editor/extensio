@@ -6,11 +6,16 @@
 
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import ProjectView from "@/views/ProjectView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     component: HomeView,
+  },
+  {
+    path: "/project",
+    component: ProjectView,
   },
 ];
 

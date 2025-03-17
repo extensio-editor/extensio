@@ -13,6 +13,7 @@ const {
   readdirSync,
   copyFileSync,
 } = require("node:fs");
+const { stat } = require("node:fs").promises;
 const { join, resolve } = require("node:path");
 
 const commandExists = require("command-exists-promise");
@@ -94,18 +95,21 @@ const loadExtensions = () => {
   return reqs;
 };
 
+let currentProjectFolder = require("os").homedir();
+
 const createWindow = () => {
   const icon = getIconLocation();
   const win = new BrowserWindow({
     width: 800,
     height: 800,
     minWidth: 400,
-    minHeight: 475,
+    minHeight: 610,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
     },
     frame: false,
+    backgroundColor: "#000",
   });
 
   if (isProd) {
@@ -234,6 +238,15 @@ const createWindow = () => {
     res.json(extensions);
   });
 
+  express_app.get("/project/get", (req, res) => {
+    res.json({
+      name:
+        currentProjectFolder === require("os").homedir()
+          ? undefined
+          : currentProjectFolder.split(require("path").sep).pop(),
+    });
+  });
+
   express_app.get("/project/:action", async (req, res) => {
     console.log("Showing folder open dialogue");
 
@@ -248,7 +261,9 @@ const createWindow = () => {
     } else {
       console.log(dir);
       console.log(`selected ${dir.filePaths[0]}`);
+      currentProjectFolder = dir.filePaths[0];
       res.status(200).json(dir);
+      win.loadURL("http://localhost:8080/project");
       return;
     }
   });
@@ -256,7 +271,10 @@ const createWindow = () => {
   express_app.get("/rpc/update", (req, res) => {
     RPCclient.updatePresence({
       details: req.query.doing || "Idle",
-      state: req.query.project || "No project opened",
+      state:
+        req.query.project ||
+        currentProjectFolder.split(require("path").sep).pop() ||
+        "No project opened",
       largeImageKey:
         req.query.theme === "light" ? "extensio_light" : "extensio_dark",
       smallImageKey: isDev ? "extensio_devbuild" : undefined,
@@ -266,6 +284,18 @@ const createWindow = () => {
       largeImageText: "Extensio code editor",
     });
     res.status(200);
+  });
+
+  express_app.get("/files", async (req, res) => {
+    const files = readdirSync(currentProjectFolder);
+    let data = {};
+    await Promise.all(
+      files.map(async (file) => {
+        const stats = await stat(join(currentProjectFolder, file));
+        data[file] = stats.isDirectory();
+      })
+    );
+    res.json(data);
   });
 
   express_app.listen(8081, () => {

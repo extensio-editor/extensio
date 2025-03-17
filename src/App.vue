@@ -1,5 +1,5 @@
 <template>
-  <title-bar></title-bar>
+  <title-bar :project_name="currentProject"></title-bar>
   <router-view class="view left-sidebar" name="LeftSidebar"></router-view>
   <router-view class="view main-content"></router-view>
   <router-view class="view right-sidebar" name="RightSidebar"></router-view>
@@ -9,15 +9,28 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import titleBar from "./components/titleBar.vue";
 import extensionLoader from "./components/extensionLoader.vue";
 
-export default {
+export default defineComponent({
   components: {
     titleBar,
     extensionLoader,
   },
-};
+  data() {
+    return {
+      currentProject: undefined,
+    };
+  },
+  mounted() {
+    (async () => {
+      const data = await fetch("http://localhost:8081/project/get");
+      const project = await data.json();
+      this.currentProject = project.name;
+    })();
+  },
+});
 </script>
 
 <style lang="less">

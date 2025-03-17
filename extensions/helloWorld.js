@@ -1,4 +1,4 @@
-const { registerExtension } = require(process.cwd() + "/api/extensionAPI.js");
+// const { registerExtension } = require(process.cwd() + "/api/extensionAPI.js");
 
 function greet(name) {
   console.log(`Hello, ${name}!`);
@@ -17,4 +17,5 @@ const extension = {
   }).toString(),
 };
 
-registerExtension(extension);
+// I've commented out the registration. In order to see the extension work, uncomment the following line.
+// registerExtension(extension);
