@@ -64,6 +64,7 @@
 #tabBar {
   grid-area: 1 / 2 / 2 / 3;
   background-color: #22212b;
+  border-bottom-right-radius: 5px;
 }
 
 #fileView {
